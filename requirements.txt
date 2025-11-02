@@ -9,3 +9,5 @@ python-dotenv
 tqdm
 typer
 -e .
+flake8
+mypy
