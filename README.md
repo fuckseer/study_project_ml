@@ -6,6 +6,37 @@
 
 for uni  homeworks
 
+
+## 🚀 Установка окружения
+
+1. Клонировать проект:
+   ```bash
+   git clone https://github.com/<ВАШ_ЛОГИН>/study_project_ml.git
+   cd study_project_ml
+
+2. Создать виртуальное окружение
+    ```bash
+   python -m venv .venv
+    .venv\Scripts\activate  # для Windows
+    # или
+    source .venv/bin/activate  # для Linux/Mac
+
+3. Установить зависимости:
+   ```bash
+   uv pip install -r requirements.txt
+
+4. Проверить код:
+   ```bash
+   flake8 src/
+   mypy src/
+
+### ИЛИ:
+
+ ```bash
+ ./setup_project.sh
+```
+
+
 ## Project Organization
 
 ```
