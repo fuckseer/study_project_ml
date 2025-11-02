@@ -31,8 +31,11 @@ for uni  homeworks
    mypy src/
 
 ### ИЛИ:
+
  ```bash
-   ./setup_project.sh
+ ./setup_project.sh
+```
+
 
 ## Project Organization
 
