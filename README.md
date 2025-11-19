@@ -7,34 +7,62 @@
 for uni  homeworks
 
 
-## 🚀 Установка окружения
-
-1. Клонировать проект:
-   ```bash
-   git clone https://github.com/<ВАШ_ЛОГИН>/study_project_ml.git
-   cd study_project_ml
-
-2. Создать виртуальное окружение
-    ```bash
-   python -m venv .venv
-    .venv\Scripts\activate  # для Windows
-    # или
-    source .venv/bin/activate  # для Linux/Mac
-
-3. Установить зависимости:
-   ```bash
-   uv pip install -r requirements.txt
-
-4. Проверить код:
-   ```bash
-   flake8 src/
-   mypy src/
-
-### ИЛИ:
-
- ```bash
- ./setup_project.sh
+### 1️⃣ Установка окружения  
+```bash
+git clone https://github.com/fuckseer/study_project_ml.git
+cd study_project_ml
+uv venv --python 3.12
+uv pip install -r requirements.txt
+# или одной командой
+bash setup_project.sh
 ```
+
+### 2️⃣ Запуск MinIO (S3)
+```bash
+docker run -d \
+  -p 9000:9000 -p 9001:9001 \
+  -e MINIO_ROOT_USER=admin \
+  -e MINIO_ROOT_PASSWORD=admin123 \
+  quay.io/minio/minio server /data --console-address ":9001"
+```
+Создайте bucket **`study-project-data`** в консоли <http://localhost:9001>  
+и поместите туда сырой датасет (например, `titanic.csv`).
+
+Создайте файл `.env`:
+```
+AWS_ACCESS_KEY_ID=admin
+AWS_SECRET_ACCESS_KEY=admin123
+S3_ENDPOINT_URL=http://localhost:9000
+RAW_BUCKET=study-project-data
+PROCESSED_BUCKET=study-project-data
+```
+
+### 3️⃣ Запуск пайплайна
+```bash
+uv run python -m study_project_ml.pad_project_ml.pipeline_s3
+```
+Сценарий выполнит:
+1. Загрузка `titanic.csv` → S3  
+2. Скачивание обратно → `data/raw/`  
+3. Обработка и сохранение в `data/processed/`  
+4. Отправка обработанного файла обратно в S3  
+
+Ожидаемые логи:
+```
+⬆️ Upload ... → s3://study-project-data/titanic.csv
+🔧 Processing dataset ...
+🎯 Pipeline finished successfully
+```
+
+### 4️⃣ Проверка линтеров
+```bash
+uv run flake8 study_project_ml
+uv run mypy study_project_ml
+```
+
+✅ У вас должны пройти проверки и появиться в S3 оба файла: `titanic.csv` и `titanic_processed.csv`.
+
+---
 
 
 ## Project Organization

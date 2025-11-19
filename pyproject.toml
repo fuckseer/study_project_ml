@@ -1,0 +1,17 @@
+[project]
+name = "study_project_ml"
+version = "0.1.0"
+description = "Data‑science demo project"
+requires-python = ">=3.10"
+dependencies = [
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "tqdm",
+    "typer[all]",
+    "loguru",
+    "boto3",         # для работы с S3
+]
+[tool.mypy]
+strict = true
+exclude = "__pycache__"
