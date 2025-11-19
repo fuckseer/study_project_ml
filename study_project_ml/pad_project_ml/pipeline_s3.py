@@ -1,8 +1,8 @@
 from pathlib import Path
 import typer
 from loguru import logger
-from pad_project_ml.s3_utils import download_from_s3, upload_to_s3
-from pad_project_ml.processing import process_dataset
+from study_project_ml.pad_project_ml.s3_utils import download_from_s3, upload_to_s3
+from study_project_ml.pad_project_ml.processing import process_dataset
 
 app = typer.Typer()
 
