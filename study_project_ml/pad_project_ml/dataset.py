@@ -1,9 +1,29 @@
 from pathlib import Path
 
-from study_project_ml.pad_project_ml.s3_utils import upload_to_s3
+from loguru import logger
+from tqdm import tqdm
+import typer
 
-RAW_DATA_DIR = Path("data/raw")
+from pad_project_ml.config import PROCESSED_DATA_DIR, RAW_DATA_DIR
 
-def upload_raw_dataset() -> None:
-    file_path = RAW_DATA_DIR / "titanic.csv"
-    upload_to_s3(file_path, "titanic.csv")
+app = typer.Typer()
+
+
+@app.command()
+def main(
+    # ---- REPLACE DEFAULT PATHS AS APPROPRIATE ----
+    input_path: Path = RAW_DATA_DIR / "dataset.csv",
+    output_path: Path = PROCESSED_DATA_DIR / "dataset.csv",
+    # ----------------------------------------------
+) -> None:
+    # ---- REPLACE THIS WITH YOUR OWN CODE ----
+    logger.info("Processing dataset...")
+    for i in tqdm(range(10), total=10):
+        if i == 5:
+            logger.info("Something happened for iteration 5.")
+    logger.success("Processing dataset complete.")
+    # -----------------------------------------
+
+
+if __name__ == "__main__":
+    app()
