@@ -21,7 +21,8 @@ yq e '.param_grid[] | to_json' $CONFIG_FILE | while read -r params_json; do
     echo "---"
     echo "Running with: C=$C_PARAM, penalty=$PENALTY, solver=$SOLVER"
 
-    docker-compose run --rm training \
+    docker compose exec training \
+        uv run python -m study_project_ml.pad_project_ml.modeling.train \
         --experiment-name "$EXPERIMENT_NAME" \
         --c-param "$C_PARAM" \
         --penalty "$PENALTY" \
