@@ -1,1 +1,1 @@
-from study_project_ml.pad_project_ml import config
+from study_project_ml.pad_project_ml import config  # noqa: F401
