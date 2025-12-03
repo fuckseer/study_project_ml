@@ -12,7 +12,6 @@ from study_project_ml.pad_project_ml.s3_utils import download_from_s3
 
 app = typer.Typer()
 
-# Настройка MLflow
 MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://127.0.0.1:5000")
 mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 
@@ -29,29 +28,24 @@ def train(
     mlflow.set_experiment(experiment_name)
 
     with mlflow.start_run():
-        # Логирование гиперпараметров
         mlflow.log_param("C", c_param)
         mlflow.log_param("penalty", penalty)
         mlflow.log_param("solver", solver)
         logger.info(f"Гиперпараметры: C={c_param}, penalty={penalty}, solver={solver}")
 
-        # 1. Скачивание данных
         logger.info(f"Загрузка данных: {dataset_name} из S3...")
         local_path = download_from_s3(dataset_name, target_dir=Path("data/processed"))
         df = pd.read_csv(local_path)
 
-        # 2. Подготовка данных (простой пример)
         df = df.select_dtypes(include='number').dropna()
         X = df.drop("Survived", axis=1)
         y = df["Survived"]
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-        # 3. Обучение модели
         logger.info("Обучение модели LogisticRegression...")
         model = LogisticRegression(C=c_param, penalty=penalty, solver=solver, max_iter=200)
         model.fit(X_train, y_train)
 
-        # 4. Вычисление и логирование метрик
         y_pred = model.predict(X_test)
         accuracy = accuracy_score(y_test, y_pred)
         roc_auc = roc_auc_score(y_test, model.predict_proba(X_test)[:, 1])
@@ -60,8 +54,6 @@ def train(
         mlflow.log_metric("roc_auc", roc_auc)
         logger.info(f"Метрики: Accuracy={accuracy:.4f}, ROC-AUC={roc_auc:.4f}")
 
-        # 5. Логирование модели
-        # MLflow автоматически сохранит модель в S3, так как мы указали --default-artifact-root
         logger.info("Сохранение модели в MLflow...")
         mlflow.sklearn.log_model(model, "logistic_regression_model")
 

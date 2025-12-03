@@ -1,0 +1,12 @@
+experiment_name: "Titanic_Logistic_Regression_Grid_Search"
+
+param_grid:
+  - c_param: 1.0
+    penalty: "l2"
+    solver: "lbfgs"
+  - c_param: 0.5
+    penalty: "l2"
+    solver: "lbfgs"
+  - c_param: 0.1
+    penalty: "l2"
+    solver: "saga"
