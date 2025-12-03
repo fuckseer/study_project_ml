@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  minio:
+    image: quay.io/minio/minio:latest
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=admin123
+    volumes:
+      - ./minio_data:/data
+    networks:
+      - ml_network
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:latest
+    command: >
+      mlflow server
+      --host 0.0.0.0
+      --port 5000
+      --backend-store-uri postgresql://user:password@db:5432/mlflowdb
+      --default-artifact-root s3://mlflow-artifacts/
+    ports:
+      - "5001:5000"
+    environment:
+      - AWS_ACCESS_KEY_ID=admin
+      - AWS_SECRET_ACCESS_KEY=admin123
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
+    depends_on:
+      - minio
+      - db
+    networks:
+      - ml_network
+
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=mlflowdb
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    networks:
+      - ml_network
+
+  training:
+    build: .
+    volumes:
+      - .:/app
+    environment:
+      - AWS_ACCESS_KEY_ID=admin
+      - AWS_SECRET_ACCESS_KEY=admin123
+      - S3_ENDPOINT_URL=http://minio:9000
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - RAW_BUCKET=study-project-data
+      - PROCESSED_BUCKET=study-project-data
+    depends_on:
+      - minio
+      - mlflow
+    networks:
+      - ml_network
+    entrypoint: ["bash", "-c", "uv run python -m study_project_ml.pad_project_ml.train"]
+
+
+networks:
+  ml_network:
+    driver: bridge
