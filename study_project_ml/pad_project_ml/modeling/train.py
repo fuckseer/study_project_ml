@@ -1,4 +1,7 @@
 import os
+import tempfile
+
+import joblib
 import typer
 import mlflow
 import pandas as pd
@@ -55,7 +58,14 @@ def train(
         logger.info(f"Метрики: Accuracy={accuracy:.4f}, ROC-AUC={roc_auc:.4f}")
 
         logger.info("Сохранение модели в MLflow...")
-        mlflow.sklearn.log_model(model, "logistic_regression_model")
+        logger.info("Сохраняем модель вручную, без Model Registry...")
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            model_path = Path(tmpdir) / "model.pkl"
+            joblib.dump(model, model_path)
+            mlflow.log_artifact(str(model_path), artifact_path="model")
+
+        logger.success("Модель сохранена в MLflow как артефакт!")
 
     logger.success("✅ Эксперимент завершен успешно!")
 

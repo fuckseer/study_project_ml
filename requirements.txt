@@ -11,6 +11,7 @@ loguru
 tqdm
 python-dotenv
 omegaconf
+joblib
 
 black
 flake8
