@@ -216,10 +216,12 @@ docker compose exec mlflow aws --endpoint-url http://minio:9000 s3 ls
 ```
 
 MLFLOW:
-![img.png](img.png)
+<img width="1364" height="583" alt="Снимок экрана 2025-12-04 в 21 06 17" src="https://github.com/user-attachments/assets/bed09c1b-3505-49fc-9027-a5db6630620f" />
+
 
 MINIO:
-![img_1.png](img_1.png)
+<img width="1367" height="607" alt="Снимок экрана 2025-12-04 в 21 06 52" src="https://github.com/user-attachments/assets/6c4550cc-95b4-4416-9c74-1aa438944e5f" />
+
 
 ## Project Organization
 
