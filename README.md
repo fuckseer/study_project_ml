@@ -215,6 +215,11 @@ docker compose logs -f mlflow
 docker compose exec mlflow aws --endpoint-url http://minio:9000 s3 ls
 ```
 
+MLFLOW:
+![img.png](img.png)
+
+MINIO:
+![img_1.png](img_1.png)
 
 ## Project Organization
 
